@@ -42,6 +42,16 @@ pipeline {
                 }
             }
         }
+        stage('Test'0) {
+            steps {
+                script {
+                    sh '''
+                        cd build/
+                        test -f index.html
+                        '''
+                }
+            }
+        }
     }
 
     post {
