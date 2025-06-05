@@ -42,7 +42,7 @@ pipeline {
                 }
             }
         }
-        stage('Test'0) {
+        stage('Test') {
             steps {
                 script {
                     sh '''
