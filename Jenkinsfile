@@ -11,8 +11,8 @@ pipeline {
             steps {
                 script {
                     // Clean the workspace before starting
-                    sh 'sudo rm -rf node_modules || true'
-                    sh 'sudo rm -rf .npm || true'
+                    sh 'rm -rf node_modules || true'
+                    sh 'rm -rf .npm || true'
                 }
             }
         }
@@ -42,13 +42,24 @@ pipeline {
                 }
             }
         }
+
         stage('Test') {
             steps {
                 script {
-                    sh '''
-                        cd build/
-                        test -f index.html
+                    try {
+                        sh '''
+                            cd build/
+                            if [ ! -f "index.html" ]; then
+                                echo "Error: index.html not found in the build directory."
+                                exit 1
+                            else
+                                echo "Success: index.html found in the build directory."
+                            fi
                         '''
+                    } catch (exc) {
+                        echo "Test failed: ${exc}"
+                        throw exc
+                    }
                 }
             }
         }
@@ -56,11 +67,11 @@ pipeline {
 
     post {
         always {
-            echo 'Build stage completed.'
+            echo 'Pipeline completed.'
             // Clean up workspace after build
             script {
-                sh 'sudo rm -rf node_modules || true'
-                sh 'sudo rm -rf .npm || true'
+                sh 'rm -rf node_modules || true'
+                sh 'rm -rf .npm || true'
             }
         }
     }
